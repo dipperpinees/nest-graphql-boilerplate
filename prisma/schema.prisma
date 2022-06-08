@@ -1,0 +1,65 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int       @default(autoincrement()) @id
+  email     String    @unique
+  password  String
+  name      String
+  avatar    String?
+  posts      Post[]
+  followedBy Follows[] @relation("following")
+  following  Follows[] @relation("follower")
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  comment Comment[]
+}
+
+model Follows {
+  follower    User @relation("follower", fields: [followerId], references: [id])
+  followerId  Int
+  following   User @relation("following", fields: [followingId], references: [id])
+  followingId Int
+
+  @@id([followerId, followingId])
+}
+
+model Post {
+  id        Int       @default(autoincrement()) @id
+  title     String
+  content   String?
+  author    User?     @relation(fields: [authorId], references: [id])
+  category  Category? @relation(fields: [categoryId], references: [id])
+  categoryId Int?
+  authorId  Int?
+  description String?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  comment Comment[]
+}   
+
+model Category {
+  id    Int    @default(autoincrement()) @id
+  title String @unique
+  posts Post[]
+}
+
+model Comment {
+  id  Int  @default(autoincrement()) @id
+  authorId Int
+  author User @relation(fields: [authorId], references: [id])
+  postId Int
+  post Post @relation(fields: [postId], references: [id])
+  content String?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
