@@ -14,15 +14,15 @@ export class AuthResolver {
 
     @UseFilters(RegisterExceptionFilter)
     @UsePipes(ValidationPipe)
-    @Mutation((returns) => User)
-    async SignUp(@Args('signUpData') signUpData: SignUpInput) {
+    @Mutation((returns) => User, { name: 'SignUp' })
+    async signUp(@Args('signUpData') signUpData: SignUpInput) {
         return await this.authService.signUp(signUpData);
     }
 
     @UseFilters(RegisterExceptionFilter)
     @UsePipes(ValidationPipe)
-    @Mutation((returns) => SignInUser)
-    async SignIn(@Args('signInData') { email, password }: SignInInput) {
+    @Mutation((returns) => SignInUser, { name: 'SignIn' })
+    async signIn(@Args('signInData') { email, password }: SignInInput) {
         return await this.authService.signIn(email, password);
     }
 }

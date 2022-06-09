@@ -17,9 +17,16 @@ export class AuthService {
                 ...user,
                 password: hashedPassword,
             },
+            select: {
+                id: true,
+                name: true,
+                avatar: true,
+                createdAt: true,
+                updatedAt: true,
+            },
         });
 
-        return this.withoutPassword(userData);
+        return userData;
     }
 
     async signIn(email: string, password: string) {
@@ -31,10 +38,11 @@ export class AuthService {
         if (user) {
             return await compare(password, user.password).then((result) => {
                 if (result) {
-                    const userData = this.withoutPassword(user)
-                    const token = this.generateJWT(userData);
+                    delete user.email;
+                    delete user.password;
+                    const token = this.generateJWT(user);
                     return {
-                        user: userData,
+                        user,
                         token,
                     };
                 } else {
@@ -54,10 +62,5 @@ export class AuthService {
             SECRET_KEY,
             { expiresIn: '24h' }
         );
-    }
-
-    private withoutPassword(user: UserModel) {
-        const { password, ...rest } = user;
-        return rest;
     }
 }
