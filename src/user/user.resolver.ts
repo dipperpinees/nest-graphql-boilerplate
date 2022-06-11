@@ -1,6 +1,5 @@
 import { Args, Query, Resolver, ResolveField, Parent } from '@nestjs/graphql';
 import { Post } from 'src/post/models/post.model';
-import { PostService } from 'src/post/post.service';
 import { User } from './model/user.model';
 import { UserService } from './user.service';
 
@@ -8,7 +7,7 @@ import { UserService } from './user.service';
 export class UserResolver {
     constructor(private readonly userService: UserService) {}
 
-    @Query((returns) => User)
+    @Query((returns) => User, { name: 'GetUser' })
     async getUser(@Args('id') id: number) {
         return await this.userService.findById(id);
     }

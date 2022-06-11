@@ -3,7 +3,9 @@ import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class UserService {
-    constructor(private prismaService: PrismaService) {}
+    constructor(
+        private readonly prismaService: PrismaService,
+    ) {}
 
     async findByEmail(email: string) {
         const user = await this.prismaService.user.findUnique({
@@ -39,16 +41,13 @@ export class UserService {
         return user;
     }
 
-    async getUserPosts(id: number) {
-        const user = await this.prismaService.user.findUnique({
+    async getUserPosts(userId: number) {
+        const posts = await this.prismaService.post.findMany({
             where: {
-                id,
-            },
-            select: {
-                posts: true,
-            },
+                authorId: userId
+            }
         });
 
-        return user?.posts;
+        return posts;
     }
 }
