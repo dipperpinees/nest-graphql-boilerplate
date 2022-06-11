@@ -16,6 +16,7 @@ model User {
   password  String    
   name      String
   avatar    String?
+  description String?
   posts      Post[]
   followedBy Follows[] @relation("following")
   following  Follows[] @relation("follower")

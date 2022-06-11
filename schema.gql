@@ -2,6 +2,12 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type Category {
+  id: Int!
+  title: String!
+  posts: [Post]!
+}
+
 type User {
   id: Int!
   name: String!
@@ -9,12 +15,11 @@ type User {
   posts: [Post]!
 }
 
-type Post {
+type Comment {
   id: Int!
-  title: String!
+  author: User
   content: String!
-  description: String
-  author: User!
+  post: Post
   createdAt: DateTime
   updatedAt: DateTime
 }
@@ -24,27 +29,80 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
+type Post {
+  id: Int!
+  title: String!
+  content: String!
+  description: String
+  author: User!
+  category: Category!
+  createdAt: DateTime
+  updatedAt: DateTime
+  comments: [Comment]!
+}
+
+type Pagination {
+  totalDocs: Int!
+  page: Int!
+  limit: Int!
+  totalPages: Int!
+}
+
+type FilterPost {
+  docs: [Post]!
+  pagination: Pagination!
+}
+
 type SignInUser {
   user: User!
   token: String!
 }
 
 type Query {
-  getUser(id: Float!): User!
+  GetUser(id: Float!): User!
   GetPost(id: Int!): Post!
+  FilterPost(filterData: FilterPostInput!): FilterPost!
+  GetAllCategory: [Category!]!
+  GetCategoryById(id: Float!): Category!
+  GetCommentById(id: Int!): Comment!
+}
+
+input FilterPostInput {
+  page: Int = 1
+  limit: Int = 10
+  createdAt: TimeSort
+  updatedAt: TimeSort
+  categoryId: Int
+  search: String
+}
+
+enum TimeSort {
+  ASC
+  DESC
 }
 
 type Mutation {
   CreatePost(postData: CreatePostInput!): Post!
   DeletePost(id: Int!): Post!
+  UpdatePost(id: Int!, postData: UpdatePostInput!): Post!
   SignUp(signUpData: SignUpInput!): User!
   SignIn(signInData: SignInInput!): SignInUser!
+  CreateComment(commentData: CreateCommentInput!): Comment!
+  DeleteComment(id: Int!): Comment!
 }
 
 input CreatePostInput {
   title: String!
   content: String!
   description: String
+  categoryId: Int!
+}
+
+input UpdatePostInput {
+  title: String
+  content: String
+  description: String
+  categoryId: Int
 }
 
 input SignUpInput {
@@ -57,4 +115,9 @@ input SignUpInput {
 input SignInInput {
   email: String!
   password: String!
+}
+
+input CreateCommentInput {
+  content: String!
+  postId: Int!
 }
