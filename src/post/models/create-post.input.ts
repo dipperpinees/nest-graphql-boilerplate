@@ -1,4 +1,4 @@
-import { Field, InputType } from '@nestjs/graphql';
+import { Field, InputType, Int } from '@nestjs/graphql';
 import { MaxLength } from 'class-validator';
 
 @InputType()
@@ -12,4 +12,7 @@ export class CreatePostInput {
 
     @Field({ nullable: true })
     description?: string;
+
+    @Field((type) => Int)
+    categoryId: number;
 }

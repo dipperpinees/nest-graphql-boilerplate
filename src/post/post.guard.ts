@@ -3,10 +3,9 @@ import {
     ExecutionContext,
     Injectable,
     NotAcceptableException,
-    NotFoundException,
+    NotFoundException
 } from '@nestjs/common';
 import { GqlExecutionContext } from '@nestjs/graphql';
-import { Observable } from 'rxjs';
 import { PostService } from './post.service';
 
 @Injectable()
@@ -21,9 +20,13 @@ export class PostGuard implements CanActivate {
             throw new NotFoundException('PostId required');
         }
 
-        const author = await this.postService.getAuthorPost(postId);
+        const post = await this.postService.getPostById(postId);
 
-        if (!user || !author || user.id !== author.id) {
+        if(!post) {
+            throw new NotFoundException('This post doesn\'t exist')
+        }
+
+        if (!user || user.id !== post.authorId) {
             throw new NotAcceptableException("You aren't authorized to perform the action");
         }
 
