@@ -9,6 +9,8 @@ import { SECRET_KEY } from './config';
 import * as jwt from 'jsonwebtoken';
 import { AuthMiddleware } from './auth/auth.middleware';
 import { AuthModule } from './auth/auth.module';
+import { CategoryModule } from './category/category.module';
+import { CommentModule } from './comment/comment.module';
 
 @Module({
     imports: [
@@ -21,6 +23,8 @@ import { AuthModule } from './auth/auth.module';
             autoSchemaFile: 'schema.gql',
         }),
         AuthModule,
+        CategoryModule,
+        CommentModule,
     ],
     controllers: [],
     providers: [],
