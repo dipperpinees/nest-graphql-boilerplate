@@ -24,6 +24,7 @@
 
 ## <a href="https://blogzzi.herokuapp.com/graphql">DEMO</a>
 
+### Create account
 ```bash
 mutation SignUp {
   SignUp(signUpData: {
