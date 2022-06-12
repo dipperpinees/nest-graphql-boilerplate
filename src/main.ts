@@ -10,6 +10,6 @@ async function bootstrap() {
     await prismaService.enableShutdownHooks(app);
 
     app.use(cookieParser());
-    await app.listen(3000);
+    await app.listen(process.env.PORT || 3000);
 }
 bootstrap();
