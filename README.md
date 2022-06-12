@@ -24,6 +24,17 @@
 
 ## <a href="https://blogzzi.herokuapp.com/graphql">DEMO</a>
 
+mutation SignUp {
+  SignUp(signUpData: {
+    email: "abc@gmail.com",
+    password: "123456",
+    name: "Hiep Nguyen",
+  }) {
+    id
+    name
+  }
+}
+
 ## Description
 
 [Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
