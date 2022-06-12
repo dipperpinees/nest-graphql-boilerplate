@@ -21,6 +21,8 @@ import { CommentModule } from './comment/comment.module';
         GraphQLModule.forRoot<ApolloDriverConfig>({
             driver: ApolloDriver,
             autoSchemaFile: 'schema.gql',
+            introspection: true,
+            playground: true,
         }),
         AuthModule,
         CategoryModule,
