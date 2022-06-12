@@ -14,4 +14,10 @@ export class User {
 
     @Field((type) => [Post], { nullable: 'items' })
     posts?: Post[];
+
+    @Field((type) => [User], { nullable: 'items' })
+    follower?: User[];
+
+    @Field((type) => [User], { nullable: 'items' })
+    following?: User[];
 }

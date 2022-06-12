@@ -13,6 +13,8 @@ type User {
   name: String!
   avatar: String
   posts: [Post]!
+  follower: [User]!
+  following: [User]!
 }
 
 type Comment {
@@ -39,6 +41,11 @@ type Post {
   createdAt: DateTime
   updatedAt: DateTime
   comments: [Comment]!
+}
+
+type Follow {
+  follower: User!
+  following: User!
 }
 
 type Pagination {
@@ -82,6 +89,8 @@ enum TimeSort {
 }
 
 type Mutation {
+  UpdateUser(updateData: UserUpdateInput!): User!
+  Follow(followingId: Int!): Follow!
   CreatePost(postData: CreatePostInput!): Post!
   DeletePost(id: Int!): Post!
   UpdatePost(id: Int!, postData: UpdatePostInput!): Post!
@@ -89,6 +98,11 @@ type Mutation {
   SignIn(signInData: SignInInput!): SignInUser!
   CreateComment(commentData: CreateCommentInput!): Comment!
   DeleteComment(id: Int!): Comment!
+}
+
+input UserUpdateInput {
+  avatar: String
+  name: String
 }
 
 input CreatePostInput {

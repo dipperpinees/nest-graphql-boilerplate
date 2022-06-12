@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
@@ -49,5 +50,66 @@ export class UserService {
         });
 
         return posts;
+    }
+
+    async updateUser (userId, updateData: Prisma.UserUpdateInput) {
+        return this.prismaService.user.update({
+            where: {
+                id: userId
+            },
+            data: updateData
+        })
+    }
+
+    async follow (data: Prisma.FollowsCreateInput) {
+        return this.prismaService.follows.create({
+            data,
+            include: {
+                follower: true,
+                following: true
+            }
+        })
+    }
+
+    async getFollower(id: number) {
+        const followerList = await this.prismaService.follows.findMany({
+            where: {
+                followingId: id
+            },
+            select: {
+                follower: {
+                    select: {
+                        id: true,
+                        name: true,
+                        avatar: true,
+                        createdAt: true,
+                        updatedAt: true,
+                    }
+                }
+            }
+        })
+
+        return followerList.map((item) => item.follower);
+    }
+
+    async getFollowing (id: number) {
+        const followingList = await this.prismaService.follows.findMany({
+            where: {
+                followerId: id
+            },
+            select: {
+                following: {
+                    select: {
+                        id: true,
+                        name: true,
+                        avatar: true,
+                        createdAt: true,
+                        updatedAt: true,
+                    }
+                }
+            }
+        })
+
+        return followingList.map((item) => item.following);
     }
 }
