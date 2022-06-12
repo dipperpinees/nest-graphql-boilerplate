@@ -24,6 +24,7 @@
 
 ## <a href="https://blogzzi.herokuapp.com/graphql">DEMO</a>
 
+```bash
 mutation SignUp {
   SignUp(signUpData: {
     email: "abc@gmail.com",
@@ -34,6 +35,7 @@ mutation SignUp {
     name
   }
 }
+```
 
 ## Description
 
