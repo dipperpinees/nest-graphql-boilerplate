@@ -8,18 +8,25 @@ export class UserService {
         private readonly prismaService: PrismaService,
     ) {}
 
+    userSelect = {
+        id: true,
+        name: true,
+        avatar: true,
+        education: true,
+        work: true,
+        birthday: true,
+        description: true,
+        address: true,
+        createdAt: true,
+        updatedAt: true,
+    }
+
     async findByEmail(email: string) {
         const user = await this.prismaService.user.findUnique({
             where: {
                 email,
             },
-            select: {
-                id: true,
-                name: true,
-                avatar: true,
-                createdAt: true,
-                updatedAt: true,
-            },
+            select: this.userSelect,
         });
 
         return user;
@@ -30,13 +37,7 @@ export class UserService {
             where: {
                 id,
             },
-            select: {
-                id: true,
-                name: true,
-                avatar: true,
-                createdAt: true,
-                updatedAt: true,
-            },
+            select: this.userSelect,
         });
 
         return user;
@@ -71,6 +72,14 @@ export class UserService {
         })
     }
 
+    async unFollow (data: Prisma.FollowsUncheckedCreateInput) {
+        return await this.prismaService.follows.delete({
+            where: {
+                followerId_followingId: data
+            }
+        })
+    }
+
     async getFollower(id: number) {
         const followerList = await this.prismaService.follows.findMany({
             where: {
@@ -78,13 +87,7 @@ export class UserService {
             },
             select: {
                 follower: {
-                    select: {
-                        id: true,
-                        name: true,
-                        avatar: true,
-                        createdAt: true,
-                        updatedAt: true,
-                    }
+                    select: this.userSelect
                 }
             }
         })
@@ -99,17 +102,41 @@ export class UserService {
             },
             select: {
                 following: {
-                    select: {
-                        id: true,
-                        name: true,
-                        avatar: true,
-                        createdAt: true,
-                        updatedAt: true,
-                    }
+                    select: this.userSelect
                 }
             }
         })
 
         return followingList.map((item) => item.following);
+    }
+
+    async getFollowerNumber (id: number) {
+        const count = await await this.prismaService.follows.count({
+            where: {
+                followingId: id
+            }
+        })
+        return count;
+    }
+
+    async getFollowingNumber (id: number) {
+        const count = await await this.prismaService.follows.count({
+            where: {
+                followerId: id
+            }
+        })
+        return count;
+    }
+
+    async isFollowed (followingId: number, userId: number) {
+        const data = await this.prismaService.follows.findUnique({
+            where: {
+                followerId_followingId: {
+                    followerId: userId,
+                    followingId: followingId  
+                }
+            }
+        })
+        return !!data;
     }
 }

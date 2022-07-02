@@ -12,8 +12,8 @@ import { UserService } from './user.service';
 export class UserResolver {
     constructor(private readonly userService: UserService) {}
 
-    @Query((returns) => User, { name: 'GetUser' })
-    async getUser(@Args('id') id: number) {
+    @Query((returns) => User, { name: 'GetUserById' })
+    async getUserById(@Args({name: 'id', type: () => Int}) id: number) {
         return await this.userService.findById(id);
     }
 
@@ -32,7 +32,7 @@ export class UserResolver {
     }
 
     @UseGuards(AuthGuard)
-    @Mutation((returns) => Follow, {name: 'Follow'})
+    @Mutation((returns) => Boolean, {name: 'Follow'})
     async follow (
         @Args('followingId', {type: () => Int}) followingId: number,
         @CurrentUser('id') id: number
@@ -40,7 +40,7 @@ export class UserResolver {
         if(id === followingId) {
             throw new NotAcceptableException('You can not follow yourself')
         }
-        return this.userService.follow({
+        await this.userService.follow({
             follower: {
                 connect: {id}
             },
@@ -48,6 +48,22 @@ export class UserResolver {
                 connect: {id: followingId}
             }
         })
+
+        return true;
+    }
+
+    @UseGuards(AuthGuard)
+    @Mutation((returns) => Boolean, {name: 'UnFollow'})
+    async unFollow (
+        @Args('followingId', {type: () => Int}) followingId: number,
+        @CurrentUser('id') id: number
+    ) {
+        await this.userService.unFollow({
+            followerId: id,
+            followingId: followingId
+        })
+
+        return true;
     }
 
     @ResolveField((returns) => [User])
@@ -58,5 +74,22 @@ export class UserResolver {
     @ResolveField((returns) => [User])
     async following (@Parent() {id}: User) {
         return this.userService.getFollowing(id);
+    }
+
+    @ResolveField((returns) => Int)
+    async followerNumber (@Parent() {id}: User) {
+        return await this.userService.getFollowerNumber(id)
+    }
+
+    @ResolveField((returns) => Int)
+    async followingNumber (@Parent() {id}: User) {
+        return await this.userService.getFollowingNumber(id)
+    }
+
+    @UseGuards(AuthGuard)
+    @ResolveField((returns) => Boolean)
+    async isFollowed (@Parent() {id: followingId}: User, @CurrentUser('id') userId: number) {
+        if(!userId) return false;
+        return await this.userService.isFollowed(followingId, userId);
     }
 }
