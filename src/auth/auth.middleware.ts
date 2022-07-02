@@ -1,6 +1,5 @@
-import { Injectable, NestMiddleware, UnauthorizedException } from '@nestjs/common';
+import { Injectable, NestMiddleware } from '@nestjs/common';
 import * as jwt from 'jsonwebtoken';
-import { SECRET_KEY } from 'src/config';
 
 @Injectable()
 export class AuthMiddleware implements NestMiddleware {
@@ -12,8 +11,7 @@ export class AuthMiddleware implements NestMiddleware {
                 req.user = null;
             }
 
-            const { data } = jwt.verify(token, SECRET_KEY);
-
+            const { data } = jwt.verify(token, process.env.SECRET_KEY);
             req.user = data;
         } catch (e) {
             req.user = null;

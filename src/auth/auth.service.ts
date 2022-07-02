@@ -1,10 +1,8 @@
 import { HttpException, Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
-import { PrismaService } from 'src/prisma/prisma.service';
-import { hash, compare } from 'bcrypt';
+import { compare, hash } from 'bcrypt';
 import * as jwt from 'jsonwebtoken';
-import { SECRET_KEY } from 'src/config';
-import { User as UserModel } from '@prisma/client';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class AuthService {
@@ -26,7 +24,12 @@ export class AuthService {
             },
         });
 
-        return userData;
+        const token = this.generateJWT(userData);
+
+        return {
+            user: userData,
+            token
+        };
     }
 
     async signIn(email: string, password: string) {
@@ -59,8 +62,8 @@ export class AuthService {
             {
                 data: user,
             },
-            SECRET_KEY,
-            { expiresIn: '24h' }
+            process.env.SECRET_KEY,
+            { expiresIn: Number(process.env.TOKENEXPIRATION) }
         );
     }
 }
