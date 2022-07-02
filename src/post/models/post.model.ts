@@ -14,6 +14,9 @@ export class Post {
     @Field()
     content: string;
 
+    @Field({nullable: true})
+    thumbnail?: string;
+
     @Field({ nullable: true })
     description?: string;
 
@@ -31,4 +34,7 @@ export class Post {
 
     @Field((type) => [Comment], {nullable: 'items'})
     comments: Comment[];
+
+    @Field((type) => Int)
+    views: number;
 }

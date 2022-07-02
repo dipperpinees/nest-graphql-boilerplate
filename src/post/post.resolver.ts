@@ -12,16 +12,21 @@ import { PostGuard } from './post.guard';
 import { PostService } from './post.service';
 import { FilterPost } from './models/filter-post.model';
 import { UserService } from 'src/user/user.service';
+import { FileUpload, GraphQLUpload } from 'graphql-upload';
+import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
+import { CategoryService } from 'src/category/category.service';
 
 @Resolver((of) => Post)
 export class PostResolver {
     constructor(
         private readonly postService: PostService,
-        private readonly userService: UserService
+        private readonly userService: UserService,
+        private readonly cloudinaryService: CloudinaryService,
+        private readonly categoryService: CategoryService
     ) { }
 
-    @Query((returns) => Post, { name: 'GetPost' })
-    async getPost(@Args('id', { type: () => Int }) id: number) {
+    @Query((returns) => Post, { name: 'GetPostById' })
+    async getPostById(@Args('id', { type: () => Int }) id: number) {
         return await this.postService.getPostById(id);
     }
 
@@ -29,11 +34,16 @@ export class PostResolver {
     @UsePipes(ValidationPipe)
     @Mutation((returns) => Post, { name: 'CreatePost' })
     async createPost(
-        @Args('postData') postData: CreatePostInput,
+        @Args('postData') {categoryId, ...postData}: CreatePostInput,
         @CurrentUser('id') userId: number
     ) {
         return await this.postService.createPost({
             ...postData,
+            category: {
+                connect: {
+                    id: categoryId
+                }
+            },
             author: {
                 connect: {
                     id: userId,
@@ -68,8 +78,19 @@ export class PostResolver {
         return await this.postService.filterPost(filterData);
     }
 
+    @Mutation((returns) => String, { name: 'UploadImage'})
+    async uploadImage(@Args({name: 'image', type: () => GraphQLUpload}) image: FileUpload) {
+        const imageUploaded = await this.cloudinaryService.uploadSingleImage(image);
+        return imageUploaded.url;
+    }
+
     @ResolveField()
-    async comments (@Parent() {id: postId}: any) {
+    async comments (@Parent() {id: postId}) {
         return await this.postService.getPostComment(postId);
+    }
+
+    @ResolveField()
+    async category (@Parent() {categoryId}) {
+        return await this.categoryService.getCategoryById(categoryId)
     }
 }

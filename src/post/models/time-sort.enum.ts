@@ -1,10 +1,10 @@
 import { registerEnumType } from "@nestjs/graphql";
 
-export enum TIMESORT {
+export enum SORT {
     ASC="asc",
     DESC="desc"
 }
 
-registerEnumType(TIMESORT, {
+registerEnumType(SORT, {
     name: 'TimeSort',
 });

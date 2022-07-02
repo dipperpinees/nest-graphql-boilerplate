@@ -8,15 +8,6 @@ type Category {
   posts: [Post]!
 }
 
-type User {
-  id: Int!
-  name: String!
-  avatar: String
-  posts: [Post]!
-  follower: [User]!
-  following: [User]!
-}
-
 type Comment {
   id: Int!
   author: User
@@ -35,17 +26,35 @@ type Post {
   id: Int!
   title: String!
   content: String!
+  thumbnail: String
   description: String
   author: User!
   category: Category!
   createdAt: DateTime
   updatedAt: DateTime
   comments: [Comment]!
+  views: Int!
 }
 
-type Follow {
-  follower: User!
-  following: User!
+type User {
+  id: Int!
+  name: String!
+  avatar: String
+  isFollowed: Boolean
+  posts: [Post]!
+  follower: [User]!
+  following: [User]!
+  followerNumber: Int
+  followingNumber: Int
+  birthday: String
+  address: String
+  education: String
+  work: String
+}
+
+type SignInUser {
+  user: User!
+  token: String!
 }
 
 type Pagination {
@@ -60,17 +69,13 @@ type FilterPost {
   pagination: Pagination!
 }
 
-type SignInUser {
-  user: User!
-  token: String!
-}
-
 type Query {
-  GetUser(id: Float!): User!
-  GetPost(id: Int!): Post!
+  GetUserById(id: Int!): User!
+  GetPostById(id: Int!): Post!
   FilterPost(filterData: FilterPostInput!): FilterPost!
   GetAllCategory: [Category!]!
   GetCategoryById(id: Float!): Category!
+  Auth: User!
   GetCommentById(id: Int!): Comment!
 }
 
@@ -81,6 +86,7 @@ input FilterPostInput {
   updatedAt: TimeSort
   categoryId: Int
   search: String
+  views: TimeSort
 }
 
 enum TimeSort {
@@ -90,12 +96,15 @@ enum TimeSort {
 
 type Mutation {
   UpdateUser(updateData: UserUpdateInput!): User!
-  Follow(followingId: Int!): Follow!
+  Follow(followingId: Int!): Boolean!
+  UnFollow(followingId: Int!): Boolean!
   CreatePost(postData: CreatePostInput!): Post!
   DeletePost(id: Int!): Post!
   UpdatePost(id: Int!, postData: UpdatePostInput!): Post!
-  SignUp(signUpData: SignUpInput!): User!
+  UploadImage(image: Upload!): String!
+  SignUp(avatar: Upload, signUpData: SignUpInput!): SignInUser!
   SignIn(signInData: SignInInput!): SignInUser!
+  LogOut: Boolean!
   CreateComment(commentData: CreateCommentInput!): Comment!
   DeleteComment(id: Int!): Comment!
 }
@@ -119,11 +128,13 @@ input UpdatePostInput {
   categoryId: Int
 }
 
+"""The `Upload` scalar type represents a file upload."""
+scalar Upload
+
 input SignUpInput {
   email: String!
   password: String!
   name: String!
-  avatar: String
 }
 
 input SignInInput {

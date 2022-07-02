@@ -1,5 +1,6 @@
 import { Field, InputType } from '@nestjs/graphql';
 import { IsEmail, Length } from 'class-validator';
+import { FileUpload, GraphQLUpload } from 'graphql-upload';
 
 @InputType()
 export class SignUpInput {
@@ -14,7 +15,4 @@ export class SignUpInput {
     @Field()
     @Length(6, 31)
     name: string;
-
-    @Field({ nullable: true })
-    avatar?: string;
 }

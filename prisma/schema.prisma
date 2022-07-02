@@ -23,6 +23,10 @@ model User {
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   comment Comment[]
+  birthday DateTime?
+  address String?
+  education String?
+  work String?
 }
 
 model Follows {
@@ -37,7 +41,8 @@ model Follows {
 model Post {
   id        Int       @default(autoincrement()) @id
   title     String
-  content   String?
+  content   String?   @db.Text
+  thumbnail String?
   author    User?     @relation(fields: [authorId], references: [id])
   category  Category? @relation(fields: [categoryId], references: [id])
   categoryId Int?
@@ -46,6 +51,7 @@ model Post {
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   comment Comment[]
+  views Int @default(0)
 }   
 
 model Category {
@@ -60,7 +66,7 @@ model Comment {
   author User @relation(fields: [authorId], references: [id])
   postId Int
   post Post @relation(fields: [postId], references: [id])
-  content String?
+  content String
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
 }

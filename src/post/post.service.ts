@@ -1,21 +1,29 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from 'src/prisma/prisma.service';
 import { Post, Prisma, User } from '@prisma/client';
+import { PrismaService } from 'src/prisma/prisma.service';
 import { FilterPostInput } from './models/filter-post.input';
 
 @Injectable()
 export class PostService {
     constructor(private readonly prismaService: PrismaService) {}
 
-    async createPost(data: Prisma.PostCreateInput): Promise<Post> {
-        return await this.prismaService.post.create({ data });
+    async createPost(postData: Prisma.PostCreateInput): Promise<Post> {
+        const thumbnail = this.getThumbnail(postData.content);
+        return await this.prismaService.post.create({
+            data: {
+                ...postData,
+                thumbnail,
+                ...!postData.description && {description: this.makeDescription(postData.content)}
+            },
+        });
     }
 
-    async getPostById(id: number): Promise<Post>  {
-        return await this.prismaService.post.findUnique({
+    async getPostById(id: number): Promise<Post> {
+        return await this.prismaService.post.update({
             where: {
                 id,
-            }
+            },
+            data: {views: {increment: 1}}
         });
     }
 
@@ -50,39 +58,55 @@ export class PostService {
     }
 
     async filterPost(filterData: FilterPostInput) {
-        const {createdAt, updatedAt, categoryId, page, limit} = filterData;
-
-        const [totalDocs, docs] = await Promise.all([
-            await this.prismaService.$queryRaw`SELECT COUNT(*) FROM "Post"`,
-            this.prismaService.post.findMany({
-                skip: (page - 1)*limit,
-                take: limit,
-                where: {
-                    categoryId
-                },
-                orderBy: {
-                    ...createdAt && {createdAt},
-                    ...updatedAt && {updatedAt}
-                }
-            })
-        ])
-
+        //SELECT COUNT(*) FROM "Post"
+        const { createdAt, updatedAt, categoryId, page, limit, views } = filterData;
+        const docs = await this.prismaService.post.findMany({
+            skip: (page - 1) * limit,
+            take: limit,
+            where: {
+                categoryId,
+            },
+            orderBy: {
+                ...(views && { views }),
+                ...(createdAt && { createdAt }),
+                ...(updatedAt && { updatedAt }),
+            },
+        })
         return {
             docs,
             pagination: {
                 page,
                 limit,
-                totalDocs: totalDocs[0].count,
-                totalPages: Math.ceil(totalDocs[0].count/limit)
-            }
-        }
+                totalDocs: docs.length,
+                totalPages: Math.ceil(docs.length / limit),
+            },
+        };
     }
 
-    async getPostComment (postId: number) {
+    async getPostComment(postId: number) {
         return await this.prismaService.comment.findMany({
             where: {
-                postId
-            }
-        })
+                postId,
+            },
+            orderBy: {
+                createdAt: 'desc',
+            },
+        });
+    }
+
+    getThumbnail(url: string): string | null {
+        if (!url.includes('<img src') || !url.includes('http://res.cloudinary')) return null;
+
+        return url.substring(
+            url.indexOf('http://res.cloudinary'),
+            url.indexOf('"', url.indexOf('http://res.cloudinary'))
+        );
+    }
+
+    makeDescription (content: string) {
+        const textContent = content.replace(/<(?:.|\n)*?>/gm, '');
+        if(textContent.length < 130) return content;
+
+        return textContent.substring(0, textContent.indexOf(' ', 120))
     }
 }

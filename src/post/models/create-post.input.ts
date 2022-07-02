@@ -3,7 +3,7 @@ import { MaxLength } from 'class-validator';
 
 @InputType()
 export class CreatePostInput {
-    @MaxLength(50)
+    @MaxLength(100)
     @Field()
     title: string;
 
