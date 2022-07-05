@@ -38,10 +38,6 @@ mutation SignUp {
 }
 ```
 
-## Description
-
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
-
 ## Installation
 
 ```bash
@@ -59,4 +55,23 @@ $ npm run start:dev
 
 # production mode
 $ npm run start:prod
+```
+
+## ENV variables
+Fill env variables in `.env` file
+```bash
+DATABASE_URL=postgresql://USER:PASSWORD@HOST:PORT/DATABASE
+SECRET_KEY=
+CLD_CLOUD_NAME=
+CLD_API_KEY=
+CLD_API_SECRET=
+PORT=
+TOKENEXPIRATION=
+```
+## Database
+This project implements Prisma with PostgreSQL
+
+Migration:
+```bash
+prisma migrate dev --name init
 ```
