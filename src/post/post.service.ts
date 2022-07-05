@@ -13,7 +13,9 @@ export class PostService {
             data: {
                 ...postData,
                 thumbnail,
-                ...!postData.description && {description: this.makeDescription(postData.content)}
+                ...(!postData.description && {
+                    description: this.makeDescription(postData.content),
+                }),
             },
         });
     }
@@ -23,7 +25,7 @@ export class PostService {
             where: {
                 id,
             },
-            data: {views: {increment: 1}}
+            data: { views: { increment: 1 } },
         });
     }
 
@@ -58,20 +60,20 @@ export class PostService {
     }
 
     async filterPost(filterData: FilterPostInput) {
-        //SELECT COUNT(*) FROM "Post"
-        const { createdAt, updatedAt, categoryId, page, limit, views } = filterData;
+        const { createdAt, updatedAt, categoryId, page, limit, views, search } = filterData;
         const docs = await this.prismaService.post.findMany({
             skip: (page - 1) * limit,
             take: limit,
             where: {
                 categoryId,
+                title: { search },
             },
             orderBy: {
                 ...(views && { views }),
                 ...(createdAt && { createdAt }),
                 ...(updatedAt && { updatedAt }),
             },
-        })
+        });
         return {
             docs,
             pagination: {
@@ -103,10 +105,10 @@ export class PostService {
         );
     }
 
-    makeDescription (content: string) {
+    makeDescription(content: string) {
         const textContent = content.replace(/<(?:.|\n)*?>/gm, '');
-        if(textContent.length < 130) return content;
+        if (textContent.length < 130) return content;
 
-        return textContent.substring(0, textContent.indexOf(' ', 120))
+        return textContent.substring(0, textContent.indexOf(' ', 120));
     }
 }

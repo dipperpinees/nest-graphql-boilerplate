@@ -1,5 +1,4 @@
 import { Field, InputType, Int } from "@nestjs/graphql";
-import { Length } from "class-validator";
 import { PaginationInput } from "src/shared/model/pagination.input";
 import { SORT } from "./time-sort.enum";
 
