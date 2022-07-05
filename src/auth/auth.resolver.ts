@@ -5,6 +5,7 @@ import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
 import { ValidationPipe } from 'src/shared/pipes/validation.pipe';
 import { User } from 'src/user/model/user.model';
 import { RegisterExceptionFilter } from './auth-exception.filter';
+import { CurrentUser } from './auth.decorator';
 import { AuthGuard } from './auth.guard';
 import { AuthService } from './auth.service';
 import { SignInUser } from './models/sign-in-user.model';
@@ -15,29 +16,20 @@ import { SignUpInput } from './models/sign-up.input';
 export class AuthResolver {
     constructor(
         private readonly authService: AuthService,
-        private cloudinaryService: CloudinaryService
+        private readonly cloudinaryService: CloudinaryService
     ) {}
 
     @UseFilters(RegisterExceptionFilter)
     @UsePipes(ValidationPipe)
     @Mutation((returns) => SignInUser, { name: 'SignUp' })
     async signUp(
-        @Args({ name: 'avatar', type: () => GraphQLUpload, nullable: true }) avatar: FileUpload,
         @Args('signUpData') signUpData: SignUpInput,
         @Context() context: any
     ) {
-        const avatarUploaded = avatar && (await this.cloudinaryService.uploadSingleImage(avatar));
         const userData = await this.authService.signUp({
-            ...signUpData,
-            ...(avatarUploaded && { avatar: avatarUploaded.url }),
+            ...signUpData
         });
-
-        context.res.cookie('token', userData.token, {
-            maxAge: 1000 * Number(process.env.TOKENEXPIRATION),
-            httpOnly: true,
-            samesite: true,
-            secure: true,
-        });
+        this.authService.setToken(context, userData.token);
         return userData;
     }
 
@@ -46,12 +38,7 @@ export class AuthResolver {
     @Mutation((returns) => SignInUser, { name: 'SignIn' })
     async signIn(@Args('signInData') { email, password }: SignInInput, @Context() context: any) {
         const userData = await this.authService.signIn(email, password);
-        context.res.cookie('token', userData.token, {
-            maxAge: 1000 * Number(process.env.TOKENEXPIRATION),
-            httpOnly: true,
-            samesite: true,
-            secure: true,
-        });
+        this.authService.setToken(context, userData.token);
         return userData;
     }
 
@@ -64,7 +51,20 @@ export class AuthResolver {
     @Mutation((returns) => Boolean, { name: 'LogOut' })
     @UseGuards(AuthGuard)
     async logOut(@Context() context: any) {
-        context.res.cookie('token', '', { maxAge: 0 });
+        this.authService.deleteToken(context);
         return true;
+    }
+
+    @UseGuards(AuthGuard)
+    @Mutation((returns) => String, {name: 'UpdateAvatar'})
+    async updateAvatar (
+        @Args({ name: 'avatar', type: () => GraphQLUpload, nullable: true }) avatar: FileUpload,
+        @CurrentUser('id') id: number,
+        @Context() context: any
+    ) {
+        const {url} = await this.cloudinaryService.uploadSingleImage(avatar);
+        const {token} = await this.authService.updateAvatar(id, url);
+        this.authService.setToken(context, token);
+        return url;
     }
 }

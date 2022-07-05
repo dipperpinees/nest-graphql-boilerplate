@@ -102,16 +102,20 @@ type Mutation {
   DeletePost(id: Int!): Post!
   UpdatePost(id: Int!, postData: UpdatePostInput!): Post!
   UploadImage(image: Upload!): String!
-  SignUp(avatar: Upload, signUpData: SignUpInput!): SignInUser!
+  SignUp(signUpData: SignUpInput!): SignInUser!
   SignIn(signInData: SignInInput!): SignInUser!
   LogOut: Boolean!
+  UpdateAvatar(avatar: Upload): String!
   CreateComment(commentData: CreateCommentInput!): Comment!
   DeleteComment(id: Int!): Comment!
 }
 
 input UserUpdateInput {
-  avatar: String
   name: String
+  birthday: String
+  address: String
+  education: String
+  work: String
 }
 
 input CreatePostInput {

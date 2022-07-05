@@ -58,7 +58,8 @@ export class UserService {
             where: {
                 id: userId
             },
-            data: updateData
+            data: updateData,
+            select: this.userSelect,
         })
     }
 

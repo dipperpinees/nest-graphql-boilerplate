@@ -1,16 +1,19 @@
 import { NotAcceptableException, UseGuards } from '@nestjs/common';
-import { Args, Query, Resolver, ResolveField, Parent, Mutation, Int } from '@nestjs/graphql';
+import { Args, Int, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
 import { CurrentUser } from 'src/auth/auth.decorator';
 import { AuthGuard } from 'src/auth/auth.guard';
+import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
 import { Post } from 'src/post/models/post.model';
-import { Follow } from './model/follow.model';
 import { UserUpdateInput } from './model/user-update.input';
 import { User } from './model/user.model';
 import { UserService } from './user.service';
 
 @Resolver((of) => User)
 export class UserResolver {
-    constructor(private readonly userService: UserService) {}
+    constructor(
+        private readonly userService: UserService,
+        private readonly cloudinaryService: CloudinaryService
+        ) {}
 
     @Query((returns) => User, { name: 'GetUserById' })
     async getUserById(@Args({name: 'id', type: () => Int}) id: number) {

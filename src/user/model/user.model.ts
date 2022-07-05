@@ -41,5 +41,4 @@ export class User {
 
     @Field({nullable: true})
     work?: string;
-
 }

@@ -8,6 +8,14 @@ import { PrismaService } from 'src/prisma/prisma.service';
 export class AuthService {
     constructor(private prismaService: PrismaService) {}
 
+    userSelect = {
+        id: true,
+        name: true,
+        avatar: true,
+        createdAt: true,
+        updatedAt: true,
+    };
+
     async signUp(user: Prisma.UserCreateInput) {
         const hashedPassword = user.password && (await hash(user.password, 10));
         const userData = await this.prismaService.user.create({
@@ -15,20 +23,14 @@ export class AuthService {
                 ...user,
                 password: hashedPassword,
             },
-            select: {
-                id: true,
-                name: true,
-                avatar: true,
-                createdAt: true,
-                updatedAt: true,
-            },
+            select: this.userSelect,
         });
 
         const token = this.generateJWT(userData);
 
         return {
             user: userData,
-            token
+            token,
         };
     }
 
@@ -57,6 +59,25 @@ export class AuthService {
         }
     }
 
+    async updateAvatar(userId: number, avatar: string) {
+        const userData = await this.prismaService.user.update({
+            where: {
+                id: userId,
+            },
+            data: {
+                avatar,
+            },
+            select: this.userSelect,
+        });
+
+        const token = this.generateJWT(userData);
+
+        return {
+            user: userData,
+            token,
+        };
+    }
+
     generateJWT(user: any) {
         return jwt.sign(
             {
@@ -65,5 +86,18 @@ export class AuthService {
             process.env.SECRET_KEY,
             { expiresIn: Number(process.env.TOKENEXPIRATION) }
         );
+    }
+
+    setToken(context: any, token: string) {
+        context.res.cookie('token', token, {
+            maxAge: 1000 * Number(process.env.TOKENEXPIRATION),
+            httpOnly: true,
+            samesite: true,
+            secure: true,
+        });
+    }
+
+    deleteToken(context: any) {
+        context.res.cookie('token', '', { maxAge: 0 });
     }
 }
