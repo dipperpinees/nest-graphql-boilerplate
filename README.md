@@ -24,20 +24,6 @@
 
 ## <a href="https://blogzzi.herokuapp.com/graphql">Demo</a>
 
-### Demo create account
-```bash
-mutation SignUp {
-  SignUp(signUpData: {
-    email: "abc@gmail.com",
-    password: "123456",
-    name: "Hiep Nguyen",
-  }) {
-    id
-    name
-  }
-}
-```
-
 ## Installation
 
 ```bash
