@@ -56,7 +56,7 @@ prisma migrate dev --name init
 - Search articles by Full-text search and filter articles by category, view, lastest,...
 
 ## Demo some queries and mutations
-Visit https://www.hiepnguyen.site/graphql to demo this
+Visit https://hiepnguyen.site/graphql to demo this
 
 ### Sign up
 ```bash
