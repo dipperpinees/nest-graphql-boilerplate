@@ -61,26 +61,30 @@ export class PostService {
 
     async filterPost(filterData: FilterPostInput) {
         const { createdAt, updatedAt, categoryId, page, limit, views, search } = filterData;
-        const docs = await this.prismaService.post.findMany({
-            skip: (page - 1) * limit,
-            take: limit,
-            where: {
-                categoryId,
-                title: { search },
-            },
-            orderBy: {
-                ...(views && { views }),
-                ...(createdAt && { createdAt }),
-                ...(updatedAt && { updatedAt }),
-            },
-        });
+        const where = {
+            categoryId,
+            title: { search },
+        }
+        const [docs, totalDocs] = await this.prismaService.$transaction([
+            this.prismaService.post.findMany({
+                where,
+                skip: (page - 1) * limit,
+                take: limit,      
+                orderBy: {
+                    ...(views && { views }),
+                    ...(createdAt && { createdAt }),
+                    ...(updatedAt && { updatedAt }),
+                },
+            }),
+            this.prismaService.post.count({where})
+        ])
         return {
             docs,
             pagination: {
                 page,
                 limit,
-                totalDocs: docs.length,
-                totalPages: Math.ceil(docs.length / limit),
+                totalDocs,
+                totalPages: Math.ceil(totalDocs / limit),
             },
         };
     }
