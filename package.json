@@ -1,11 +1,11 @@
 {
-  "name": "nestjsdemo",
+  "name": "nestjs-blog",
   "version": "0.0.1",
   "description": "",
-  "author": "",
-  "private": true,
+  "author": "HiepNguyen",
+  "private": false,
   "main": "src/main.ts",
-  "license": "UNLICENSED",
+  "license": "MIT",
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "nest build",
@@ -87,9 +87,5 @@
     ],
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"
-  },
-  "engines": {
-    "node": "16.15.1",
-    "npm": "8.5.5"
   }
 }
