@@ -64,20 +64,20 @@ export class PostService {
         const where = {
             categoryId,
             title: { search },
-        }
+        };
         const [docs, totalDocs] = await this.prismaService.$transaction([
             this.prismaService.post.findMany({
                 where,
                 skip: (page - 1) * limit,
-                take: limit,      
+                take: limit,
                 orderBy: {
                     ...(views && { views }),
                     ...(createdAt && { createdAt }),
                     ...(updatedAt && { updatedAt }),
                 },
             }),
-            this.prismaService.post.count({where})
-        ])
+            this.prismaService.post.count({ where }),
+        ]);
         return {
             docs,
             pagination: {

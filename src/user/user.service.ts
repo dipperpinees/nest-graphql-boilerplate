@@ -4,9 +4,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class UserService {
-    constructor(
-        private readonly prismaService: PrismaService,
-    ) {}
+    constructor(private readonly prismaService: PrismaService) {}
 
     userSelect = {
         id: true,
@@ -19,7 +17,7 @@ export class UserService {
         address: true,
         createdAt: true,
         updatedAt: true,
-    }
+    };
 
     async findByEmail(email: string) {
         const user = await this.prismaService.user.findUnique({
@@ -46,98 +44,98 @@ export class UserService {
     async getUserPosts(userId: number) {
         const posts = await this.prismaService.post.findMany({
             where: {
-                authorId: userId
-            }
+                authorId: userId,
+            },
         });
 
         return posts;
     }
 
-    async updateUser (userId, updateData: Prisma.UserUpdateInput) {
+    async updateUser(userId, updateData: Prisma.UserUpdateInput) {
         return this.prismaService.user.update({
             where: {
-                id: userId
+                id: userId,
             },
             data: updateData,
             select: this.userSelect,
-        })
+        });
     }
 
-    async follow (data: Prisma.FollowsCreateInput) {
+    async follow(data: Prisma.FollowsCreateInput) {
         return this.prismaService.follows.create({
             data,
             include: {
                 follower: true,
-                following: true
-            }
-        })
+                following: true,
+            },
+        });
     }
 
-    async unFollow (data: Prisma.FollowsUncheckedCreateInput) {
+    async unFollow(data: Prisma.FollowsUncheckedCreateInput) {
         return await this.prismaService.follows.delete({
             where: {
-                followerId_followingId: data
-            }
-        })
+                followerId_followingId: data,
+            },
+        });
     }
 
     async getFollower(id: number) {
         const followerList = await this.prismaService.follows.findMany({
             where: {
-                followingId: id
+                followingId: id,
             },
             select: {
                 follower: {
-                    select: this.userSelect
-                }
-            }
-        })
+                    select: this.userSelect,
+                },
+            },
+        });
 
         return followerList.map((item) => item.follower);
     }
 
-    async getFollowing (id: number) {
+    async getFollowing(id: number) {
         const followingList = await this.prismaService.follows.findMany({
             where: {
-                followerId: id
+                followerId: id,
             },
             select: {
                 following: {
-                    select: this.userSelect
-                }
-            }
-        })
+                    select: this.userSelect,
+                },
+            },
+        });
 
         return followingList.map((item) => item.following);
     }
 
-    async getFollowerNumber (id: number) {
+    async getFollowerNumber(id: number) {
         const count = await await this.prismaService.follows.count({
             where: {
-                followingId: id
-            }
-        })
+                followingId: id,
+            },
+        });
         return count;
     }
 
-    async getFollowingNumber (id: number) {
+    async getFollowingNumber(id: number) {
         const count = await await this.prismaService.follows.count({
             where: {
-                followerId: id
-            }
-        })
+                followerId: id,
+            },
+        });
         return count;
     }
 
-    async isFollowed (followingId: number, userId: number) {
+    async isFollowed(followingId: number, userId: number) {
         const data = await this.prismaService.follows.findUnique({
             where: {
                 followerId_followingId: {
                     followerId: userId,
-                    followingId: followingId  
-                }
-            }
-        })
+                    followingId: followingId,
+                },
+            },
+        });
         return !!data;
     }
 }

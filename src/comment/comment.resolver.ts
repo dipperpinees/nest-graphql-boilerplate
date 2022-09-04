@@ -16,42 +16,45 @@ export class CommentResolver {
         private readonly commentService: CommentService,
         private readonly userService: UserService,
         private readonly postService: PostService
-    ) { }
+    ) {}
 
     @UsePipes(ValidationPipe)
     @UseGuards(AuthGuard)
     @Mutation((type) => Comment, { name: 'CreateComment' })
-    async createComment(@Args('commentData') {postId, ...rest}: CreateCommentInput, @CurrentUser('id') userId: number) {
+    async createComment(
+        @Args('commentData') { postId, ...rest }: CreateCommentInput,
+        @CurrentUser('id') userId: number
+    ) {
         return await this.commentService.createComment({
             ...rest,
             author: {
-                connect: { id: userId }
+                connect: { id: userId },
             },
             post: {
-                connect: { id: postId }
-            }
+                connect: { id: postId },
+            },
         });
     }
 
-    @Query((type) => Comment, {name: 'GetCommentById'})
-    async getCommentById(@Args('id', {type: () => Int}) id: number) {
+    @Query((type) => Comment, { name: 'GetCommentById' })
+    async getCommentById(@Args('id', { type: () => Int }) id: number) {
         return await this.commentService.getCommentById(id);
     }
 
     @UseGuards(CommentGuard)
     @UseGuards(AuthGuard)
-    @Mutation((type) => Comment, {name: 'DeleteComment'})
-    async deleteComment(@Args('id', {type: () => Int}) id: number) {
+    @Mutation((type) => Comment, { name: 'DeleteComment' })
+    async deleteComment(@Args('id', { type: () => Int }) id: number) {
         return this.commentService.deleteComment(id);
     }
 
     @ResolveField()
-    async author (@Parent() {authorId}: any) {
+    async author(@Parent() { authorId }: any) {
         return this.userService.findById(authorId);
     }
 
     @ResolveField()
-    async post (@Parent() {postId}: any) {
+    async post(@Parent() { postId }: any) {
         return this.postService.getPostById(postId);
     }
 }

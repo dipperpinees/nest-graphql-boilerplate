@@ -6,23 +6,23 @@ import { PrismaService } from 'src/prisma/prisma.service';
 export class CommentService {
     constructor(private readonly prismaService: PrismaService) {}
 
-    async createComment (data: Prisma.CommentCreateInput) {
-        return await this.prismaService.comment.create({data})
+    async createComment(data: Prisma.CommentCreateInput) {
+        return await this.prismaService.comment.create({ data });
     }
 
     async getCommentById(id: number) {
         return await this.prismaService.comment.findUnique({
             where: {
-                id
-            }
-        })
+                id,
+            },
+        });
     }
 
     async deleteComment(id: number) {
         return await this.prismaService.comment.delete({
             where: {
-                id
-            }
-        })
+                id,
+            },
+        });
     }
 }

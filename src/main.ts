@@ -11,7 +11,7 @@ async function bootstrap() {
     await prismaService.enableShutdownHooks(app);
 
     app.use(cookieParser());
-    app.use(graphqlUploadExpress({ maxFileSize: 10000000, maxFiles: 10}))
+    app.use(graphqlUploadExpress({ maxFileSize: 10000000, maxFiles: 10 }));
     await app.listen(process.env.PORT || 3000);
 }
 bootstrap();

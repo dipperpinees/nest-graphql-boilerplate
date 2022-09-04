@@ -23,7 +23,7 @@ export class PostResolver {
         private readonly userService: UserService,
         private readonly cloudinaryService: CloudinaryService,
         private readonly categoryService: CategoryService
-    ) { }
+    ) {}
 
     @Query((returns) => Post, { name: 'GetPostById' })
     async getPostById(@Args('id', { type: () => Int }) id: number) {
@@ -34,15 +34,15 @@ export class PostResolver {
     @UsePipes(ValidationPipe)
     @Mutation((returns) => Post, { name: 'CreatePost' })
     async createPost(
-        @Args('postData') {categoryId, ...postData}: CreatePostInput,
+        @Args('postData') { categoryId, ...postData }: CreatePostInput,
         @CurrentUser('id') userId: number
     ) {
         return await this.postService.createPost({
             ...postData,
             category: {
                 connect: {
-                    id: categoryId
-                }
+                    id: categoryId,
+                },
             },
             author: {
                 connect: {
@@ -53,7 +53,7 @@ export class PostResolver {
     }
 
     @ResolveField((returns) => User)
-    async author(@Parent() {authorId}: any) {
+    async author(@Parent() { authorId }: any) {
         return this.userService.findById(authorId);
     }
 
@@ -67,30 +67,32 @@ export class PostResolver {
     @UseGuards(PostGuard)
     @UseGuards(AuthGuard)
     @Mutation((returns) => Post, { name: 'UpdatePost' })
-    async updatePost(@Args('id', { type: () => Int }) id: number,
-        @Args('postData') updateData: UpdatePostInput) {
+    async updatePost(
+        @Args('id', { type: () => Int }) id: number,
+        @Args('postData') updateData: UpdatePostInput
+    ) {
         return await this.postService.updatePost(id, updateData);
     }
 
     @UsePipes(ValidationPipe)
-    @Query((returns) => FilterPost, {name: 'FilterPost'})
+    @Query((returns) => FilterPost, { name: 'FilterPost' })
     async filterPost(@Args('filterData') filterData: FilterPostInput) {
         return await this.postService.filterPost(filterData);
     }
 
-    @Mutation((returns) => String, { name: 'UploadImage'})
-    async uploadImage(@Args({name: 'image', type: () => GraphQLUpload}) image: FileUpload) {
+    @Mutation((returns) => String, { name: 'UploadImage' })
+    async uploadImage(@Args({ name: 'image', type: () => GraphQLUpload }) image: FileUpload) {
         const imageUploaded = await this.cloudinaryService.uploadSingleImage(image);
         return imageUploaded.url;
     }
 
     @ResolveField()
-    async comments (@Parent() {id: postId}) {
+    async comments(@Parent() { id: postId }) {
         return await this.postService.getPostComment(postId);
     }
 
     @ResolveField()
-    async category (@Parent() {categoryId}) {
-        return await this.categoryService.getCategoryById(categoryId)
+    async category(@Parent() { categoryId }) {
+        return await this.categoryService.getCategoryById(categoryId);
     }
 }

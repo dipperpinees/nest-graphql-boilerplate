@@ -1,21 +1,21 @@
-import { Field, InputType, Int } from "@nestjs/graphql";
-import { PaginationInput } from "src/shared/model/pagination.input";
-import { SORT } from "./time-sort.enum";
+import { Field, InputType, Int } from '@nestjs/graphql';
+import { PaginationInput } from 'src/shared/model/pagination.input';
+import { SORT } from './time-sort.enum';
 
 @InputType()
 export class FilterPostInput extends PaginationInput {
-    @Field((type) => SORT, {nullable: true})
+    @Field((type) => SORT, { nullable: true })
     createdAt?: SORT;
 
-    @Field((type) => SORT, {nullable: true})
+    @Field((type) => SORT, { nullable: true })
     updatedAt?: SORT;
 
-    @Field((type) => Int, {nullable: true})
+    @Field((type) => Int, { nullable: true })
     categoryId?: number;
 
-    @Field({nullable: true})
+    @Field({ nullable: true })
     search?: string;
 
-    @Field((type) => SORT, {nullable: true})
-    views?: SORT
+    @Field((type) => SORT, { nullable: true })
+    views?: SORT;
 }

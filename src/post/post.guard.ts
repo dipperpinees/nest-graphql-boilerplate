@@ -3,7 +3,7 @@ import {
     ExecutionContext,
     Injectable,
     NotAcceptableException,
-    NotFoundException
+    NotFoundException,
 } from '@nestjs/common';
 import { GqlExecutionContext } from '@nestjs/graphql';
 import { PostService } from './post.service';
@@ -22,8 +22,8 @@ export class PostGuard implements CanActivate {
 
         const post = await this.postService.getPostById(postId);
 
-        if(!post) {
-            throw new NotFoundException('This post doesn\'t exist')
+        if (!post) {
+            throw new NotFoundException("This post doesn't exist");
         }
 
         if (!user || user.id !== post.authorId) {

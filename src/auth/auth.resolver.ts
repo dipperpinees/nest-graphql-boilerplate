@@ -22,12 +22,9 @@ export class AuthResolver {
     @UseFilters(RegisterExceptionFilter)
     @UsePipes(ValidationPipe)
     @Mutation((returns) => SignInUser, { name: 'SignUp' })
-    async signUp(
-        @Args('signUpData') signUpData: SignUpInput,
-        @Context() context: any
-    ) {
+    async signUp(@Args('signUpData') signUpData: SignUpInput, @Context() context: any) {
         const userData = await this.authService.signUp({
-            ...signUpData
+            ...signUpData,
         });
         this.authService.setToken(context, userData.token);
         return userData;
@@ -56,14 +53,14 @@ export class AuthResolver {
     }
 
     @UseGuards(AuthGuard)
-    @Mutation((returns) => String, {name: 'UpdateAvatar'})
-    async updateAvatar (
+    @Mutation((returns) => String, { name: 'UpdateAvatar' })
+    async updateAvatar(
         @Args({ name: 'avatar', type: () => GraphQLUpload, nullable: true }) avatar: FileUpload,
         @CurrentUser('id') id: number,
         @Context() context: any
     ) {
-        const {url} = await this.cloudinaryService.uploadSingleImage(avatar);
-        const {token} = await this.authService.updateAvatar(id, url);
+        const { url } = await this.cloudinaryService.uploadSingleImage(avatar);
+        const { token } = await this.authService.updateAvatar(id, url);
         this.authService.setToken(context, token);
         return url;
     }

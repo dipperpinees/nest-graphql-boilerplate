@@ -14,7 +14,7 @@ export class Post {
     @Field()
     content: string;
 
-    @Field({nullable: true})
+    @Field({ nullable: true })
     thumbnail?: string;
 
     @Field({ nullable: true })
@@ -32,7 +32,7 @@ export class Post {
     @Field((type) => Date, { nullable: true })
     updatedAt?: Date;
 
-    @Field((type) => [Comment], {nullable: 'items'})
+    @Field((type) => [Comment], { nullable: 'items' })
     comments: Comment[];
 
     @Field((type) => Int)

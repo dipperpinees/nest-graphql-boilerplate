@@ -6,6 +6,6 @@ import { UserService } from './user.service';
 @Module({
     imports: [CloudinaryModule],
     providers: [UserService, UserResolver],
-    exports: [UserService]
+    exports: [UserService],
 })
 export class UserModule {}

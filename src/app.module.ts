@@ -23,7 +23,7 @@ import { UserModule } from './user/user.module';
             introspection: true,
             playground: true,
             uploads: false,
-            context: ({ req, res }) => ({ req, res })
+            context: ({ req, res }) => ({ req, res }),
         }),
         AuthModule,
         CategoryModule,

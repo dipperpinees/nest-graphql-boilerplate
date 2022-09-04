@@ -3,7 +3,7 @@ import {
     ExecutionContext,
     Injectable,
     NotAcceptableException,
-    NotFoundException
+    NotFoundException,
 } from '@nestjs/common';
 import { GqlExecutionContext } from '@nestjs/graphql';
 import { CommentService } from './comment.service';
@@ -22,8 +22,8 @@ export class CommentGuard implements CanActivate {
 
         const comment = await this.commentService.getCommentById(commentId);
 
-        if(!comment) {
-            throw new NotFoundException('This comment doesn\'t exist')
+        if (!comment) {
+            throw new NotFoundException("This comment doesn't exist");
         }
 
         if (!user || user.id !== comment.authorId) {
