@@ -63,7 +63,7 @@ Visit https://hiepnguyen.site/graphql to demo this
   SignUp (signUpData: {
     email: "YOUR_EMAIL",
     name: "YOUR_NAME",
-    password: "YOUR_PASSWORD
+    password: "YOUR_PASSWORD"
   }) {
     user {
       id
