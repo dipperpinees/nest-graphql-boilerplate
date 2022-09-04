@@ -78,7 +78,7 @@ Visit https://hiepnguyen.site/graphql to demo this
 ```bash
   SignIn (signInData: {
     email: "YOUR_EMAIL",
-    password: "YOUR_PASSWORD
+    password: "YOUR_PASSWORD"
   }) {
     user {
       id
