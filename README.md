@@ -60,6 +60,7 @@ Visit https://hiepnguyen.site/graphql to demo this
 
 ### Sign up
 ```bash
+mutation {
   SignUp (signUpData: {
     email: "YOUR_EMAIL",
     name: "YOUR_NAME",
@@ -72,10 +73,12 @@ Visit https://hiepnguyen.site/graphql to demo this
     }
     token
   }
+}
 ```
 
 ### Sign in
 ```bash
+mutation {
   SignIn (signInData: {
     email: "YOUR_EMAIL",
     password: "YOUR_PASSWORD"
@@ -87,6 +90,7 @@ Visit https://hiepnguyen.site/graphql to demo this
     }
     token
   }
+}
 ```
 
 ### Get article by id
@@ -103,6 +107,36 @@ Visit https://hiepnguyen.site/graphql to demo this
       updatedAt
     }
   }
+```
+
+### Create Article
+```bash
+mutation {
+  CreatePost(postData: {
+    title: ""
+    content: ""
+    description: ""
+    categoryId: ""
+  }) {
+    id
+    title
+    content
+    thumbnail
+    description
+    author {
+      id
+    }
+    category {
+      id
+      title
+    }
+    comments {
+      id
+      content
+    }
+    views
+  }
+}
 ```
 
 ### Search & filter articles
