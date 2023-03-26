@@ -80,8 +80,8 @@ type Query {
 }
 
 input FilterPostInput {
-  page: Int = 1
-  limit: Int = 10
+  page: Int! = 1
+  limit: Int! = 10
   createdAt: TimeSort
   updatedAt: TimeSort
   categoryId: Int
