@@ -13,7 +13,7 @@ export class User {
     avatar?: string;
 
     @Field({ nullable: true })
-    isFollowed: Boolean;
+    isFollowed: boolean;
 
     @Field((type) => [Post], { nullable: 'items' })
     posts?: Post[];

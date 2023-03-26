@@ -5,8 +5,8 @@ import { Min } from 'class-validator';
 export class PaginationInput {
     @Min(1)
     @Field((type) => Int)
-    page: number = 1;
+    page = 1;
 
     @Field((type) => Int)
-    limit: number = 10;
+    limit = 10;
 }
