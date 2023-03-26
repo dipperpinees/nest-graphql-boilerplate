@@ -4,9 +4,6 @@
 
   <p align="center">Blog API using <a href="https://nestjs.com/">NestJS</a>, <a href="https://www.apollographql.com/docs/apollo-server/">Apollo Server</a>, <a href="https://www.prisma.io/">Prisma</a></p>
 
-
-## <a href="https://hiepnguyen.site/graphql">Demo</a>
-
 ## Installation
 
 ```bash
