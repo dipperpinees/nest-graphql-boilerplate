@@ -27,6 +27,15 @@ $ npm run build:prod
 $ npm run start:prod
 ```
 
+## Running the app with Docker
+```bash
+# build the image
+$ docker build -t nestjs-boilerplate .
+
+# run the image
+$ docker run nestjs-boilerplate
+```
+
 ## ENV variables
 Fill env variables in `.env` file
 ```bash
