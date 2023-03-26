@@ -4,9 +4,6 @@
 
   <p align="center">Blog API using <a href="https://nestjs.com/">NestJS</a>, <a href="https://www.apollographql.com/docs/apollo-server/">Apollo Server</a>, <a href="https://www.prisma.io/">Prisma</a></p>
 
-
-## <a href="https://hiepnguyen.site/graphql">Demo</a>
-
 ## Installation
 
 ```bash
@@ -23,7 +20,17 @@ $ npm run start
 $ npm run start:dev
 
 # production mode
+$ npm run build:prod
 $ npm run start:prod
+```
+
+## Running the app with Docker
+```bash
+# build the image
+$ docker build -t nestjs-boilerplate .
+
+# run the image
+$ docker run nestjs-boilerplate
 ```
 
 ## ENV variables
@@ -56,7 +63,7 @@ prisma migrate dev --name init
 - Search articles by Full-text search and filter articles by category, view, lastest,...
 
 ## Demo some queries and mutations
-Visit https://hiepnguyen.site/graphql to demo this
+Visit https://nestjs-boilerplate-7klb.onrender.com/graphql to demo this
 
 ### Sign up
 ```bash
