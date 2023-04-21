@@ -66,7 +66,7 @@ prisma migrate dev --name init
 Visit https://nestjs-boilerplate-7klb.onrender.com/graphql to demo this
 
 ### Sign up
-```bash
+```graphql
 mutation {
   SignUp (signUpData: {
     email: "YOUR_EMAIL",
@@ -84,7 +84,7 @@ mutation {
 ```
 
 ### Sign in
-```bash
+```graphql
 mutation {
   SignIn (signInData: {
     email: "YOUR_EMAIL",
@@ -101,7 +101,7 @@ mutation {
 ```
 
 ### Get article by id
-```bash
+```graphql
   query {
     GetPostById(id: POST_ID) {
       id
@@ -117,7 +117,7 @@ mutation {
 ```
 
 ### Create Article
-```bash
+```graphql
 mutation {
   CreatePost(postData: {
     title: ""
@@ -147,7 +147,7 @@ mutation {
 ```
 
 ### Search & filter articles
-```bash
+```graphql
   query {
     FilterPost (filterData: {
       page: 1,
